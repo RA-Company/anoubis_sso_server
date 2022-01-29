@@ -1,8 +1,9 @@
-# frozen_string_literal: true
-
 require_relative "anoubis_sso_server/version"
+require_relative "anoubis_sso_server/engine"
 
+## Main module of library for create basic SSO Server based on OAUTH authentication.
 module AnoubisSsoServer
-  class Error < StandardError; end
-  # Your code goes here...
+  ## Default error class
+  class Error < StandardError;
+  end
 end

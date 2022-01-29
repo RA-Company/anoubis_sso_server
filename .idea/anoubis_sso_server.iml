@@ -11,7 +11,74 @@
     </content>
     <orderEntry type="jdk" jdkName="RVM: ruby-2.7.1 [anoubis_sso_server]" jdkType="RUBY_SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="actioncable (v6.1.4.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="actionmailbox (v6.1.4.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="actionmailer (v6.1.4.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="actionpack (v6.1.4.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="actiontext (v6.1.4.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="actionview (v6.1.4.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="activejob (v6.1.4.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="activemodel (v6.1.4.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="activerecord (v6.1.4.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="activestorage (v6.1.4.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="activesupport (v6.1.4.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="ast (v2.4.2, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="bcrypt (v3.1.16, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="builder (v3.2.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="bundler (v2.3.6, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rake (v13.0.1, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="concurrent-ruby (v1.1.9, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="crass (v1.0.6, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="diff-lcs (v1.5.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="domain_name (v0.5.20190701, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="erubi (v1.10.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="globalid (v1.0.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="http-accept (v1.7.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="http-cookie (v1.0.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="i18n (v1.9.1, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="loofah (v2.13.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="mail (v2.7.1, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="marcel (v1.0.2, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="method_source (v1.0.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="mime-types (v3.4.1, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="mime-types-data (v3.2022.0105, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="mini_mime (v1.1.2, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="minitest (v5.15.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="mysql2 (v0.5.3, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="netrc (v0.11.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="nio4r (v2.5.8, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="nokogiri (v1.13.1, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="parallel (v1.21.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="parser (v3.1.0.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="racc (v1.6.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rack (v2.2.3, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rack-test (v1.1.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rails (v6.1.4.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rails-dom-testing (v2.0.3, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rails-html-sanitizer (v1.4.2, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="railties (v6.1.4.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rainbow (v3.1.1, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rake (v13.0.6, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="redis (v4.4.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="regexp_parser (v2.2.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rest-client (v2.1.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rexml (v3.2.5, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rspec (v3.10.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rspec-core (v3.10.2, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rspec-expectations (v3.10.2, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rspec-mocks (v3.10.2, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rspec-support (v3.10.3, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rubocop (v1.25.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rubocop-ast (v1.15.1, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="ruby-progressbar (v1.11.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="sprockets (v4.0.2, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="sprockets-rails (v3.4.2, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="thor (v1.2.1, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="tzinfo (v2.0.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="unf (v0.1.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="unf_ext (v0.0.8, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="unicode-display_width (v2.1.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="websocket-driver (v0.7.5, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="websocket-extensions (v0.1.5, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="zeitwerk (v2.5.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
   </component>
 </module>

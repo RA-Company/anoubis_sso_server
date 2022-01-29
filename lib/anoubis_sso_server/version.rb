@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
 module AnoubisSsoServer
-  VERSION = "0.1.0"
+  ## Library version
+  VERSION = "0.1.1"
 end

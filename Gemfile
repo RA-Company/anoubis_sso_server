@@ -10,3 +10,5 @@ gem "rake", "~> 13.0"
 gem "rspec", "~> 3.0"
 
 gem "rubocop", "~> 1.21"
+
+gem "anoubis", git: 'https://github.com/RA-Company/anoubis.git', branch: 'main'

@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "Library for create basic SSO Server based on OAUTH authentication."
   spec.homepage = "https://github.com/RA-Company/"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 2.6.0"
+  spec.required_ruby_version = ">= 2.7.1"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/RA-Company/anoubis_sso_server"
@@ -29,8 +29,8 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  # Uncomment to register a new dependency of your gem
-  # spec.add_dependency "example-gem", "~> 1.0"
+  #spec.add_dependency "redis", "~> 4.5.1"
+  spec.add_dependency "anoubis", "~> 2.0.0"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
