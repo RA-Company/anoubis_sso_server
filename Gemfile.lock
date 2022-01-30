@@ -1,14 +1,14 @@
 GIT
   remote: https://github.com/RA-Company/anoubis.git
-  revision: 8313be3e61ccd4e94b4ac91a57132a05bd82041c
+  revision: 7d0bd732a81ded6c5618f29acf6cfbae937191b8
   branch: main
   specs:
     anoubis (2.0.0)
-      bcrypt (~> 3.1.16)
-      mysql2 (~> 0.5.3)
-      rails (~> 6.1.0)
-      redis (~> 4.4.0)
-      rest-client (~> 2.1.0)
+      bcrypt (>= 3.1.16)
+      mysql2 (>= 0.5.3)
+      rails (>= 6.1.0)
+      redis (>= 4.5.1)
+      rest-client (>= 2.1.0)
 
 PATH
   remote: .
@@ -105,14 +105,10 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2022.0105)
     mini_mime (1.1.2)
-    mini_portile2 (2.7.1)
     minitest (5.15.0)
     mysql2 (0.5.3)
     netrc (0.11.0)
     nio4r (2.5.8)
-    nokogiri (1.13.1)
-      mini_portile2 (~> 2.7.0)
-      racc (~> 1.4)
     nokogiri (1.13.1-x86_64-linux)
       racc (~> 1.4)
     parallel (1.21.0)
@@ -150,7 +146,7 @@ GEM
       thor (~> 1.0)
     rainbow (3.1.1)
     rake (13.0.6)
-    redis (4.4.0)
+    redis (4.5.1)
     regexp_parser (2.2.0)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)

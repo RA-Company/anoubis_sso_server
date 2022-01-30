@@ -1,4 +1,5 @@
-## Main application class inherited from {https://api.rubyonrails.org/v6.1.4/classes/ActionController/API.html ActionController::API}
+##
+# Main application class inherited from {https://www.rubydoc.info/gems/anoubis/Anoubis/ApplicationController Anoubis::ApplicationController}
 class AnoubisSsoServer::ApplicationController < Anoubis::ApplicationController
   ## Selected SSO system
   attr_accessor :current_system
@@ -63,6 +64,21 @@ class AnoubisSsoServer::ApplicationController < Anoubis::ApplicationController
       value = Rails.configuration.anoubis_sso_silent_url
     rescue
       value = sso_server + 'silent.html'
+    end
+
+    value
+  end
+
+  ##
+  # Returns SSO User model.
+  # Can be redefined in Rails.application configuration_anoubis_ss_user_model configuration parameter.
+  # By default returns {AnoubisSsoServer::User} model class
+  # @return [Class] User model class
+  def user_model
+    begin
+      value = Object.const_get Rails.configuration.anoubis_sso_user_model
+    rescue
+      value = AnoubisSsoServer::User
     end
 
     value

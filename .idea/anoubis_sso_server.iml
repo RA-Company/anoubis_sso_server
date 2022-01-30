@@ -58,7 +58,7 @@
     <orderEntry type="library" scope="PROVIDED" name="railties (v6.1.4.4, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rainbow (v3.1.1, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rake (v13.0.6, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="redis (v4.4.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="redis (v4.5.1, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="regexp_parser (v2.2.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rest-client (v2.1.0, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rexml (v3.2.5, RVM: ruby-2.7.1 [anoubis_sso_server]) [gem]" level="application" />
