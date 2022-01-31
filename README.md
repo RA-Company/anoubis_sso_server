@@ -32,21 +32,34 @@ By default system database isn't filled any data.
 For adding data to database please add this to db/seed.rb of your application.
 
 ```ruby
-user = AnoubisSsoServer::User.where(email: 'admin@local.sys').first
+user = AnoubisSsoServer::User.where(email: '<your_email>').first
 unless user
   user = AnoubisSsoServer::User.new
-  user.email = 'admin@local.sys'
-  user.password = '12345'
-  user.password_confirmation = '12345'
-  user.name = 'Administrator'
-  user.surname = 'System'
+  user.email = '<your_email>'
+  user.password = '<your_password>'
+  user.password_confirmation = '<your_password>'
+  user.name = '<your_name>'
+  user.surname = '<your_surname>'
   user.save
 end
 ```
 
+Please use strong password when create user login.
+
 After this seed this data to database:
 
     $ bundle exec rake db:seed
+
+## Configuration parameters
+
+This configuration parameters can be placed at files config/application.rb for global configuration or config/environments/<environment>.rb for custom environment configuration.
+
+```ruby
+config.anoubis_sso_server = 'https://sso.example.com/' # Full URL of SSO server
+config.anoubis_sso_login_url = 'https://sso.example.com/login' # Full URL for login page. (By default calculate from config.anoubis_sso_server adding 'login')
+config.anoubis_sso_silent_url = 'https://sso.example.com/silent.html' # Full URL for silent refresh page. (By default calculate from config.anoubis_sso_server adding 'silent.html')
+config.anoubis_sso_origin = /^https:\/\/.*\.example\.com$/ # Regexp for prevent CORS access from others domain
+```
 
 ## Development
 
