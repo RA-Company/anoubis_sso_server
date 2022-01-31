@@ -20,9 +20,33 @@ Or install it yourself as:
 
     $ gem install anoubis_sso_server
 
+After it please install default migrations:
+
+    $ rails anoubis_sso_server:install:migrations
+    $ bundle exec rake db:migrate
+
 ## Usage
 
-TODO: Write usage instructions here
+By default system database isn't filled any data.
+
+For adding data to database please add this to db/seed.rb of your application.
+
+```ruby
+user = AnoubisSsoServer::User.where(email: 'admin@local.sys').first
+unless user
+  user = AnoubisSsoServer::User.new
+  user.email = 'admin@local.sys'
+  user.password = '12345'
+  user.password_confirmation = '12345'
+  user.name = 'Administrator'
+  user.surname = 'System'
+  user.save
+end
+```
+
+After this seed this data to database:
+
+    $ bundle exec rake db:seed
 
 ## Development
 

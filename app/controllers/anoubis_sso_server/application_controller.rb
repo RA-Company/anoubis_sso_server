@@ -115,4 +115,25 @@ class AnoubisSsoServer::ApplicationController < Anoubis::ApplicationController
 
     session
   end
+
+  ##
+  # Returns user by UUID from the Redis cache or from database. If User isn't present in cache than User is loaded from database and placed to cache.
+  # @param uuid [String] UUID of user
+  # @return [Class] Returns user class
+  def get_user_by_uuid(uuid)
+    begin
+      user = user_model.new JSON.parse(redis.get("#{redis_prefix}user:#{uuid}"),{ symbolize_names: true })
+    rescue
+      user = nil
+    end
+
+    return user if user
+
+    user = user_model.where(uuid: uuid).first
+    return nil unless user
+
+    redis.set("#{redis_prefix}user:#{uuid}", user.to_json(except: :password_digest))
+
+    user
+  end
 end
