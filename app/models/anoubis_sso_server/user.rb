@@ -29,11 +29,27 @@ class AnoubisSsoServer::User < AnoubisSsoServer::ApplicationRecord
   validates :public, presence: true, length: { maximum: 40 }, uniqueness: { case_sensitive: true }
 
   ##
-  # Fires before create any User on the server. Procedure generates internal UUID, public UUID and setup timezone to GMT.
+  # Fires before create any User on the server. Procedure generates internal UUID and setup timezone to GMT.
+  # Public user identifier is generated also if not defined.
   def before_validation_sso_server_user_on_create
-    self.uuid = SecureRandom.uuid
-    self.public = SecureRandom.uuid
+    self.uuid = setup_private_user_id
+    self.public = setup_public_user_id unless public
+
     self.timezone = 'GMT' if !self.timezone
+  end
+
+  ##
+  # Procedure setup private user identifier. Procedure can be redefined.
+  # @return [String] public user identifier
+  def setup_private_user_id
+    SecureRandom.uuid
+  end
+
+  ##
+  # Procedure setup public user identifier. Used for open API. Procedure can be redefined.
+  # @return [String] public user identifier
+  def setup_public_user_id
+    SecureRandom.uuid
   end
 
   ##

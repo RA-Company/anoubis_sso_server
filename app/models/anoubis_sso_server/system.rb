@@ -1,6 +1,8 @@
 ##
 # Default System class
 class AnoubisSsoServer::System < AnoubisSsoServer::ApplicationRecord
+  self.table_name = 'systems'
+
   before_validation :before_validation_sso_server_system_on_create, on: :create
   after_save :after_save_sso_server_system
 
@@ -13,12 +15,26 @@ class AnoubisSsoServer::System < AnoubisSsoServer::ApplicationRecord
   ##
   # Fires before create system. Procedure generates public and private UUID and RSA keypair
   def before_validation_sso_server_system_on_create
-    self.uuid = SecureRandom.uuid
-    self.public = SecureRandom.uuid
+    self.uuid = setup_private_system_id
+    self.public = setup_public_system_id unless public
     self.request_uri = []
 
     keys = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
     self.jwk = keys.export include_private: true
+  end
+
+  ##
+  # Procedure setup private user identifier. Procedure can be redefined.
+  # @return [String] public user identifier
+  def setup_private_system_id
+    SecureRandom.uuid
+  end
+
+  ##
+  # Procedure setup public user identifier. Used for open API. Procedure can be redefined.
+  # @return [String] public user identifier
+  def setup_public_system_id
+    SecureRandom.uuid
   end
 
   ##
