@@ -48,21 +48,44 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
   # Default path: /openid/.well-known/jwks.json
   # @return [Hash] Current JWKs
   def jwks
-    jwks_cache_name = "#{self.redis_prefix}jwks"
+    jwks_cache_name = "#{redis_prefix}jwks"
 
     begin
       jwks_cache = JSON.parse(self.redis.get(jwks_cache_name),{ symbolize_names: true })
     rescue StandardError => e
       jwks_cache = {}
       jwks_cache[:time] = Time.now.utc.to_i + 3600
-      jwks_cache[:data] = self.generate_jwks
+      jwks_cache[:data] = generate_jwks
     end
 
-    jwks_cache[:data] = self.generate_jwks if jwks_cache[:time] < Time.now.utc.to_i
+    jwks_cache[:data] = generate_jwks if jwks_cache[:time] < Time.now.utc.to_i
 
     jwks_cache[:time] = Time.now.utc.to_i + 3600
-    self.redis.set jwks_cache_name, jwks_cache.to_json
+    redis.set jwks_cache_name, jwks_cache.to_json
 
     render json: jwks_cache[:data]
+  end
+
+  ##
+  # Procedure generates keys according by used systems. Data is loaded from {AnoubisSsoServer::System}.
+  # @return [Hash] Hash ow JWK keys
+  def generate_jwks
+    result = {
+      keys: []
+    }
+
+    AnoubisSsoServer::System.where(state: 'opened').each do |sys|
+      key = {
+        use: 'sig',
+        kty: sys.jwk[:kty],
+        kid: "public:#{sys.public}",
+        alg: 'RS256',
+        n: sys.jwk[:n],
+        e: sys.jwk[:e]
+      }
+      result[:keys].push key
+    end
+
+    result
   end
 end

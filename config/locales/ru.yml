@@ -1,0 +1,5 @@
+ru:
+  anoubis:
+    errors:
+      fields:
+        login: Логин не задан

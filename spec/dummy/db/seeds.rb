@@ -1,0 +1,1 @@
+Anubis::Engine.load_seed
