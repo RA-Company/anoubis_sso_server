@@ -29,8 +29,7 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  #spec.add_dependency "redis", "~> 4.5.1"
-  spec.add_dependency "anoubis", "~> 1.0.0"
+  spec.add_dependency "anoubis", ">= 1.0.0"
   spec.add_dependency "rails", ">= 7.0.0"
   spec.add_dependency "redis", ">= 4.5.1"
   spec.add_dependency "bcrypt", ">= 3.1.16"
