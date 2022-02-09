@@ -1,6 +1,6 @@
 module AnoubisSsoServer
   ##
-  # Main AnubisSsoServer Engine class
+  # Main AnoubisSsoServer Engine class
   class Engine < ::Rails::Engine
     isolate_namespace AnoubisSsoServer
     config.generators.api_only = true

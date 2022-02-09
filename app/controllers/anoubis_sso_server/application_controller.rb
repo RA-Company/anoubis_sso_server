@@ -13,6 +13,9 @@ class AnoubisSsoServer::ApplicationController < Anoubis::ApplicationController
   ## Returns SSO silent url used for silent refresh token.
   attr_accessor :sso_silent_url
 
+  ## Returns used User model
+  attr_accessor :user_model
+
   ##
   # Returns main SSO server URL. Link should be defined in Rails.configuration.anoubis.sso_server configuration parameter
   # @return [String] link to SSO server
@@ -75,6 +78,10 @@ class AnoubisSsoServer::ApplicationController < Anoubis::ApplicationController
   # By default returns {AnoubisSsoServer::User} model class
   # @return [Class] User model class
   def user_model
+    @user_model ||= get_user_model
+  end
+
+  private def get_user_model
     begin
       value = Object.const_get Rails.configuration.anoubis_sso_user_model
     rescue

@@ -1,5 +1,7 @@
 ru:
   anoubis:
     errors:
+      incorrect_login: "Некорректный логин или пароль"
       fields:
-        login: Логин не задан
+        login: "Логин не задан"
+        password: "Пароль не задан"

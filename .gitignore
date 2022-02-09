@@ -12,3 +12,8 @@
 *.gem
 Gemfile.lock
 /.github
+.env
+.rvrmc
+spec/dummy/log
+spec/dummy/tmp
+/spec/dummy/log/

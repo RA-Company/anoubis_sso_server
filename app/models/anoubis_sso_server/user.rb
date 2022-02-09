@@ -65,19 +65,19 @@ class AnoubisSsoServer::User < AnoubisSsoServer::ApplicationRecord
   # Fires before delete User from database.
   # Procedure call procedure for clear Redis cache data for the user.
   def after_destroy_sso_server_user
-    self.clear_cache
+    clear_cache
   end
 
   ##
   # Procedure saves cached User model data to Redis database for improve access speed.
   def save_cache
-    self.redis.set("#{redis_prefix}user:#{uuid}", self.to_json(except: [:password_digest])) if self.redis
+    redis.set("#{redis_prefix}user:#{uuid}", self.to_json(except: [:password_digest])) if redis
   end
 
   ##
   # Procedure clear cached User model data.
   def clear_cache
-    self.redis.del("#{redis_prefix}user:#{uuid}") if self.redis
+    redis.del("#{redis_prefix}user:#{uuid}") if redis
   end
 
   ##

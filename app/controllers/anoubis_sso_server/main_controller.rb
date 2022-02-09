@@ -89,24 +89,24 @@ class AnoubisSsoServer::MainController < AnoubisSsoServer::ApplicationController
     }
 
     unless params[:login]
-      redirect_to redirect_url + 'error=' + I18n.t('anoubis.errors.fields.login')
+      redirect_to redirect_url + 'error=' + ERB::Util.url_encode(I18n.t('anoubis.errors.fields.login')), { allow_other_host: true }
       return
     end
 
     unless params[:password]
-      redirect_to redirect_url + 'error=' + I18n.t('errors.incorrect_parameters')
+      redirect_to redirect_url + 'error=' + ERB::Util.url_encode(I18n.t('anoubis.errors.fields.password')), { allow_other_host: true }
       return
     end
 
-    u = User.where(email: params[:login]).first
+    u = user_model.where(email: params[:login]).first
 
     unless u
-      redirect_to redirect_url + 'error=' + I18n.t('errors.incorrect_login')
+      redirect_to redirect_url + 'error=' + ERB::Util.url_encode(I18n.t('anoubis.errors.incorrect_login')), { allow_other_host: true }
       return
     end
 
     unless u.authenticate(params[:password])
-      redirect_to redirect_url + 'error=' + I18n.t('errors.incorrect_login')
+      redirect_to redirect_url + 'error=' + ERB::Util.url_encode(I18n.t('anoubis.errors.incorrect_login')), { allow_other_host: true }
       return
     end
 
