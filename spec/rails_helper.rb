@@ -1,6 +1,10 @@
 require 'spec_helper'
 
+ENV['RAILS_ENV'] ||= 'test'
+abort("The Rails environment is running in production mode!") if Rails.env.production?
+
 require 'rspec/rails'
+require 'factory_bot_rails'
 
 begin
   ActiveRecord::Migration.maintain_test_schema!
@@ -9,7 +13,6 @@ rescue ActiveRecord::PendingMigrationError => e
   exit 1
 end
 
-require 'factory_bot_rails'
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
@@ -20,17 +23,3 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.render_views
 end
-
-=begin
-
-
-ENV['RAILS_ENV'] ||= 'test'
-require File.expand_path('../dummy/config/environment', __FILE__)
-
-# Prevent database truncation if the environment is production
-abort("The Rails environment is running in production mode!") if Rails.env.production?
-
-
-
-
-=end

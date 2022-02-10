@@ -4,7 +4,9 @@ class AnoubisSsoServer::System < AnoubisSsoServer::ApplicationRecord
   self.table_name = 'systems'
 
   before_validation :before_validation_sso_server_system_on_create, on: :create
+  before_save :before_save_sso_server_system
   after_save :after_save_sso_server_system
+  after_destroy :after_destroy_sso_server_system
 
   validates :title, presence: true, length: { maximum: 100 }
   validates :uuid, presence: true, length: { maximum: 40 }, uniqueness: { case_sensitive: true }
@@ -45,8 +47,22 @@ class AnoubisSsoServer::System < AnoubisSsoServer::ApplicationRecord
   end
 
   ##
+  # Fires before System was saved to SQL database. Delete old system cache if public identifier was changed.
+  def before_save_sso_server_system
+    redis.del "#{redis_prefix}system:#{public_was}" if public_was && public != public_was
+  end
+
+  ##
   # Fires after System was saved to SQL database and setup system cache in Redis database for fast access.
   def after_save_sso_server_system
-    redis.set("#{redis_prefix}system:#{uuid}", { uuid: uuid, public: public, request_uri: request_uri, jwk: jwk, ttl: ttl }.to_json )
+    redis.set("#{redis_prefix}system:#{public}", { uuid: uuid, public: public, request_uri: request_uri, jwk: jwk, ttl: ttl }.to_json )
+    redis.del "#{redis_prefix}jwks"
+  end
+
+  ##
+  # Fires after System was destroyed. Clears all systems caches.
+  def after_destroy_sso_server_system
+    redis.del "#{redis_prefix}system:#{public}"
+    redis.del "#{redis_prefix}jwks"
   end
 end

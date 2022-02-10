@@ -2,6 +2,7 @@ en:
   anoubis:
     errors:
       incorrect_login: "Incorrect login or password"
+      system_not_defined: "SSO system is not defined in Rails.configuration.anoubis_sso_system"
       fields:
         login: "Login not defined"
         password: "Password not defined"

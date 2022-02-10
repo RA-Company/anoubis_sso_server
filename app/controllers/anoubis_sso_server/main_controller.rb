@@ -8,17 +8,17 @@ class AnoubisSsoServer::MainController < AnoubisSsoServer::ApplicationController
   #   GET /api/<version>/login
   #
   # <b>Parameters:</b>
+  # - <b>login</b> (String) --- user email address <i>(required field)</i>
+  # - <b>password</b> (String) --- user password <i>(required field)</i>
   # - <b>locale</b> (String) --- the output language locale <i>(optional value)</i>
-  # - <b>offset</b> (String) --- starting number for selection <i>(optional value, default: 0)</i>
-  # - <b>limit</b> (String) --- number of selected rows <i>(optional value, default: 10)</i>
-  # - <b>tab</b> (String) --- the tab, is used for selected data <i>(optional value, default: first defined tab)</i>
+  # - <b>code</b> (String) --- login code for redirect <i>(optional value, default: 0)</i>
   #
   # <b>Request example:</b>
-  #   curl --header "Content-Type: application/json" --header 'Authorization: Bearer <session-token>' http://<server>:<port>/api/<api-version>/<controller>?offset=0&limit=10
+  #   curl --header "Content-Type: application/json" http://<server>:<port>/api/<api-version>/login=admin@example.com&password=password&locale=en
   #
   # <b>Results:</b>
   #
-  # Resulting data returns in JSON format.
+  # Resulting data returns as redirect to silent URL with login result.
   #
   # <b>Examples:</b>
   #
@@ -83,11 +83,6 @@ class AnoubisSsoServer::MainController < AnoubisSsoServer::ApplicationController
     redirect_url = sso_silent_url
     redirect_url += redirect_url.index('?') ? '&' : '?'
 
-    result = {
-      result: 0,
-      message: I18n.t('anoubis.success')
-    }
-
     unless params[:login]
       redirect_to redirect_url + 'error=' + ERB::Util.url_encode(I18n.t('anoubis.errors.fields.login')), { allow_other_host: true }
       return
@@ -98,15 +93,20 @@ class AnoubisSsoServer::MainController < AnoubisSsoServer::ApplicationController
       return
     end
 
-    u = user_model.where(email: params[:login]).first
+    usr = user_model.where(email: params[:login]).first
 
-    unless u
+    unless usr
       redirect_to redirect_url + 'error=' + ERB::Util.url_encode(I18n.t('anoubis.errors.incorrect_login')), { allow_other_host: true }
       return
     end
 
-    unless u.authenticate(params[:password])
+    unless usr.authenticate(params[:password])
       redirect_to redirect_url + 'error=' + ERB::Util.url_encode(I18n.t('anoubis.errors.incorrect_login')), { allow_other_host: true }
+      return
+    end
+
+    unless current_system
+      redirect_to redirect_url + 'error=' + ERB::Util.url_encode(I18n.t('anoubis.errors.system_not_defined')), { allow_other_host: true }
       return
     end
 
@@ -119,25 +119,23 @@ class AnoubisSsoServer::MainController < AnoubisSsoServer::ApplicationController
       end
     end
 
-    system = self.get_system Rails.configuration.sso_system
-
     session_name = SecureRandom.uuid
     session = {
-      id: u.id,
-      uuid: u.uuid,
-      ttl: Time.now.utc.to_i + system[:ttl],
-      timeout: system[:ttl]
+      id: usr.id,
+      uuid: usr.uuid,
+      ttl: Time.now.utc.to_i + current_system[:ttl],
+      timeout: current_system[:ttl]
     }
 
     cookies[:oauth_session] = session_name
-    self.redis.set("#{self.redis_prefix}session:#{session_name}", session.to_json, { ex: 86400 })
+    redis.set("#{redis_prefix}session:#{session_name}", session.to_json, ex: 86400)
 
     unless code
-      redirect_to redirect_url + "code=0"
+      redirect_to redirect_url + "code=0", { allow_other_host: true }
     else
       auth_code = SecureRandom.uuid
-      self.redis.set("#{self.redis_prefix}auth_code:#{auth_code}", params[:code], { ex: 600 })
-      redirect_to redirect_url + "code=#{auth_code}"
+      redis.set("#{redis_prefix}auth_code:#{auth_code}", params[:code], ex: 600)
+      redirect_to redirect_url + "code=#{auth_code}", { allow_other_host: true }
     end
   end
 end

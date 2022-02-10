@@ -29,6 +29,8 @@ By default system database isn't filled any data.
 
 For adding data to database please add this to db/seed.rb of your application.
 
+First of all add admin user to database:
+
 ```ruby
 user = AnoubisSsoServer::User.where(email: '<your_email>').first
 unless user
@@ -43,6 +45,27 @@ end
 ```
 
 Please use strong password when create user login.
+
+Then add systems to database.
+
+```ruby
+system = AnoubisSsoServer::System.where(public: 'sso-system').first
+unless system
+  system = AnoubisSsoServer::System.new
+  system.title = 'SSO'
+  system.public = 'sso-system'
+  system.state = 'hidden'
+  system.save
+end
+
+ext_system = AnoubisSsoServer::System.where(public: '<system_identifier>').first
+unless ext_system
+  ext_system = AnoubisSsoServer::System.new
+  ext_system.title = '<system_name>'
+  ext_system.public = '<system_identifier>'
+  ext_system.save
+end
+```
 
 After this seed this data to database:
 

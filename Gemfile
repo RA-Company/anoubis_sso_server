@@ -9,6 +9,7 @@ gemspec
 #gem "rspec", "~> 3.0"
 #gem "rubocop", "~> 1.21"
 gem 'redis'
+gem 'jwt'
 gem 'anoubis', git: 'https://github.com/RA-Company/anoubis.git', branch: 'main'
 
 #group :development, :test do

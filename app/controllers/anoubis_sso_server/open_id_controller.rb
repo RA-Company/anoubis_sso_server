@@ -48,22 +48,15 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
   # Default path: /openid/.well-known/jwks.json
   # @return [Hash] Current JWKs
   def jwks
-    jwks_cache_name = "#{redis_prefix}jwks"
-
     begin
-      jwks_cache = JSON.parse(self.redis.get(jwks_cache_name),{ symbolize_names: true })
+      jwks_cache = JSON.parse(self.redis.get("#{redis_prefix}jwks"),{ symbolize_names: true })
     rescue StandardError => e
-      jwks_cache = {}
-      jwks_cache[:time] = Time.now.utc.to_i + 3600
-      jwks_cache[:data] = generate_jwks
+      jwks_cache = generate_jwks
     end
 
-    jwks_cache[:data] = generate_jwks if jwks_cache[:time] < Time.now.utc.to_i
+    redis.set "#{redis_prefix}jwks", jwks_cache.to_json, ex: 3600
 
-    jwks_cache[:time] = Time.now.utc.to_i + 3600
-    redis.set jwks_cache_name, jwks_cache.to_json
-
-    render json: jwks_cache[:data]
+    render json: jwks_cache
   end
 
   ##
@@ -78,7 +71,7 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
       key = {
         use: 'sig',
         kty: sys.jwk[:kty],
-        kid: "public:#{sys.public}",
+        kid: "public:#{sys.uuid}",
         alg: 'RS256',
         n: sys.jwk[:n],
         e: sys.jwk[:e]

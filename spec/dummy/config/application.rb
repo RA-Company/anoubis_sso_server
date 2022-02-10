@@ -29,5 +29,6 @@ module Dummy
 
     config.anoubis_sso_server = 'https://example.com/'
     config.anoubis_redis_prefix = 'anoubis_sso_server'
+    config.anoubis_sso_system = 'sso-test'
   end
 end

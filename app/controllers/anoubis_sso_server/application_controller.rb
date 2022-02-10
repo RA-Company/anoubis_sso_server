@@ -92,6 +92,23 @@ class AnoubisSsoServer::ApplicationController < Anoubis::ApplicationController
   end
 
   ##
+  # Returns current SSO system data
+  # @return [Hash] current SSO system
+  def current_system
+    @current_system ||= get_current_system
+  end
+
+  private def get_current_system
+    begin
+      system = AnoubisSsoServer::System.new(JSON.parse(redis.get("#{redis_prefix}system:#{Rails.configuration.anoubis_sso_system}"),{ symbolize_names: true }))
+    rescue
+      system = nil
+    end
+
+    system
+  end
+
+  ##
   # Check current origin of header by Regexp defined in Rails.configuration.anoubis_sso_origin configuration parameter
   # @return [Boolean] request host origin validation
   def check_origin
@@ -116,7 +133,7 @@ class AnoubisSsoServer::ApplicationController < Anoubis::ApplicationController
         session[:ttl] = Time.now.utc.to_i + session[:timeout]
         redis.del("#{redis_prefix}session:#{cookies[:oauth_session]}")
         cookies[:oauth_session] = session_name
-        redis.set("#{redis_prefix}session:#{session_name}", session.to_json, { ex: 86400 })
+        redis.set("#{redis_prefix}session:#{session_name}", session.to_json, ex: 86400)
       end
     end
 
