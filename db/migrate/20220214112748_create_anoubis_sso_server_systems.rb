@@ -1,4 +1,4 @@
-class CreateSystems < ActiveRecord::Migration[6.1]
+class CreateAnoubisSsoServerSystems < ActiveRecord::Migration[7.0]
   def change
     create_table :systems do |t|
       t.string :title, limit: 100, null: false

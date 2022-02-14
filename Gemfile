@@ -18,5 +18,7 @@ gem 'anoubis', git: 'https://github.com/RA-Company/anoubis.git', branch: 'main'
 #end
 
 group :test do
+  gem 'dotenv'
+  gem 'dotenv-rails'
   gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 end

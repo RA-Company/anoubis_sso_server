@@ -1,4 +1,4 @@
-class CreateUsers < ActiveRecord::Migration[6.1]
+class CreateAnoubisSsoServerUsers < ActiveRecord::Migration[7.0]
   def change
     create_table :users do |t|
       t.string :email, limit: 100, null: false
