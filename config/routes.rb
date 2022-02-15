@@ -6,7 +6,7 @@ AnoubisSsoServer::Engine.routes.draw do
       scope path: ':version' do
         get 'login', to: 'anoubis_sso_server/main#login', as: 'api_internal_login'
         #get 'auth', to: 'main#auth'
-        #get 'dashboard', to: 'main#dashboard'
+        get 'dashboard', to: 'anoubis_sso_server/dashboard#index'
       end
     end
 

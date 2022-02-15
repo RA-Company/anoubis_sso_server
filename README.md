@@ -76,10 +76,11 @@ After this seed this data to database:
 This configuration parameters can be placed at files config/application.rb for global configuration or config/environments/<environment>.rb for custom environment configuration.
 
 ```ruby
-config.anoubis_sso_server = 'https://sso.example.com/' # Full URL of SSO server
-config.anoubis_sso_login_url = 'https://sso.example.com/login' # Full URL for login page. (By default calculate from config.anoubis_sso_server adding 'login')
-config.anoubis_sso_silent_url = 'https://sso.example.com/silent.html' # Full URL for silent refresh page. (By default calculate from config.anoubis_sso_server adding 'silent.html')
-config.anoubis_sso_origin = /^https:\/\/.*\.example\.com$/ # Regexp for prevent CORS access from others domain
+config.anoubis_sso_server = 'https://sso.example.com/' # Full URL of SSO server (*required)
+config.anoubis_sso_system = 'sso-system' # Internal SSO system identifier (*required)
+config.anoubis_sso_origin = /^https:\/\/.*\.example\.com$/ # Regexp for prevent CORS access from others domain (*required)
+config.anoubis_sso_login_url = 'https://sso.example.com/login' # Full URL for login page. (By default calculate from config.anoubis_sso_server adding 'login') (*optional)
+config.anoubis_sso_silent_url = 'https://sso.example.com/silent.html' # Full URL for silent refresh page. (By default calculate from config.anoubis_sso_server adding 'silent.html') (*optional)
 ```
 
 ## Development
@@ -87,6 +88,20 @@ config.anoubis_sso_origin = /^https:\/\/.*\.example\.com$/ # Regexp for prevent 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+## Testing
+
+First of all create MySQL database and grant privileges to it.
+
+After that copy file `.env.sample` to `.env` and fill required fields like `DATABASE_NAME`, `DATABASE_USER` and `DATABASE_PASSWORD`.
+
+After it run migrate database to test environment:
+
+    $ bin/rails db:migrate RAILS_ENV=test DATABASE_USER=<user_name> DATABASE_PASSWORD=<user_password> DATABASE_NAME=<database_name>
+
+After all of this preparation you can start tests:
+
+    $ bundle exec rspec
 
 ## Contributing
 

@@ -3,6 +3,8 @@ ru:
     errors:
       incorrect_login: "Некорректный логин или пароль"
       system_not_defined: "SSO система не определена в Rails.configuration.anoubis_sso_system"
+      session_expired: "Сессия завершена"
+      incorrect_user: "Некорректный пользователь"
       fields:
         login: "Логин не задан"
         password: "Пароль не задан"

@@ -16,6 +16,126 @@ class AnoubisSsoServer::ApplicationController < Anoubis::ApplicationController
   ## Returns used User model
   attr_accessor :user_model
 
+  ## Used sso_origin
+  attr_accessor :sso_origin
+
+  ##  Returns [Anoubis::Etc::Base] global system parameters
+  attr_accessor :etc
+
+  ##
+  # Current user
+  attr_accessor :current_user
+
+  ##
+  # Action fires before any other actions
+  def after_anoubis_initialization
+    if defined? params
+      self.etc = Anoubis::Etc::Base.new({ params: params })
+    else
+      self.etc = Anoubis::Etc::Base.new
+    end
+
+    if access_allowed?
+      options request.method.to_s.upcase
+    else
+      render_error_exit({ error: I18n.t('errors.access_not_allowed') })
+      return
+    end
+
+    if self.authenticate?
+      if self.authentication
+        if self.check_menu_access?
+          return if !self.menu_access params[:controller]
+        end
+      end
+    end
+
+    puts etc.inspect
+  end
+
+  ##
+  # Check for site access. By default return true.
+  def access_allowed?
+    true
+  end
+
+  ##
+  # Checks if needed user authentication.
+  # @return [Boolean] if true, then user must be authenticated. By default application do not need authorization.
+  def authenticate?
+    false
+  end
+
+
+  ##
+  # Procedure authenticates user in the system
+  def authentication
+    session = get_oauth_session
+
+    unless session
+      render_error_exit code: -2, error: I18n.t('anoubis.errors.session_expired')
+      return
+    end
+
+    self.current_user = get_user_by_uuid session[:uuid]
+
+    unless current_user
+      self.redis.del("#{redis_prefix}session:#{cookies[:oauth_session]}")
+      cookies[:oauth_session] = nil
+      render_error_exit code: -3, error: I18n.t('anoubis.errors.incorrect_user')
+      return
+    end
+
+    if session
+      user = get_user_by_uuid session[:uuid]
+
+      if user
+        result[:data] = {
+          name: user.name,
+          surname: user.surname,
+          email: user.email,
+          id: user.public
+        }
+      else
+        self.redis.del("#{redis_prefix}session:#{cookies[:oauth_session]}")
+        cookies[:oauth_session] = nil
+        result = {
+          result: -2,
+          message: I18n.t('errors.incorrect_user')
+        }
+      end
+    else
+      result = {
+        result: -1,
+        message: I18n.t('errors.session_expired')
+      }
+    end
+  end
+
+  ##
+  # Gracefully terminate script execution with code 422 (Unprocessable entity). And JSON data
+  # @param data [Hash] Resulting data
+  # @option data [Integer] :code resulting error code
+  # @option data [String] :error resulting error message
+  def render_error_exit(data = {})
+    result = {
+      result: -1,
+      message: I18n.t('anoubis.error')
+    }
+
+    result[:result] = data[:code] if data.has_key? :code
+    result[:message] = data[:error] if data.has_key? :error
+
+
+    render json: result, status: :unprocessable_entity
+
+    begin
+      exit
+    rescue SystemExit => e
+      puts result[:message]
+    end
+  end
+
   ##
   # Returns main SSO server URL. Link should be defined in Rails.configuration.anoubis.sso_server configuration parameter
   # @return [String] link to SSO server
@@ -29,6 +149,23 @@ class AnoubisSsoServer::ApplicationController < Anoubis::ApplicationController
     rescue StandardError
       value = ''
       render json: { error: 'Please setup Rails.configuration.anoubis_sso_server configuration variable' }
+    end
+
+    value
+  end
+
+  ##
+  # Returns SSO origin. Variable should be defined in Rails.configuration.anoubis.sso_origin configuration parameter
+  # @return [Regexp] regexp for check site origin
+  def sso_origin
+    @sso_origin ||= get_sso_origin
+  end
+
+  private def get_sso_origin
+    begin
+      value = Rails.configuration.anoubis_sso_origin
+    rescue StandardError
+      value = /^.*$/
     end
 
     value
@@ -112,7 +249,13 @@ class AnoubisSsoServer::ApplicationController < Anoubis::ApplicationController
   # Check current origin of header by Regexp defined in Rails.configuration.anoubis_sso_origin configuration parameter
   # @return [Boolean] request host origin validation
   def check_origin
-    request.headers['origin'].match(Rails.configuration.anoubis_sso_origin)
+    puts 'check_origin'
+    puts request.inspect
+    puts headers.inspect
+    puts request.origin
+    puts headers['origin']
+    false
+    #headers['origin'].match(sso_origin)
   end
 
   ##

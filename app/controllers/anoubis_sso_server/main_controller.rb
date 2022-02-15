@@ -19,65 +19,6 @@ class AnoubisSsoServer::MainController < AnoubisSsoServer::ApplicationController
   # <b>Results:</b>
   #
   # Resulting data returns as redirect to silent URL with login result.
-  #
-  # <b>Examples:</b>
-  #
-  # <b>Success:</b> HTTP response code 200
-  #   {
-  #     "result": 0,
-  #     "message": "Successful",
-  #     "count": 5,
-  #     "tab": "inner",
-  #     "offset": "0",
-  #     "limit": "10",
-  #     "timestamp": 1563169525,
-  #     "fields": [
-  #         {
-  #             "prop": "title",
-  #             "title": "Soldier Ttitle"
-  #             "type": "string",
-  #             "sortable": true
-  #         },
-  #         {
-  #             "prop": "name",
-  #             "title": "Soldier Name"
-  #             "type": "string",
-  #             "sortable": true
-  #         },
-  #         {
-  #             "prop": "age",
-  #             "title": "Girl Age"
-  #             "type": "string",
-  #             "sortable": true
-  #         }
-  #     ],
-  #     "data": [
-  #         {
-  #             "id": 1,
-  #             "sys_title": "Sailor Moon",
-  #             "actions": {
-  #                 "edit": "Edit: Sailor Moon",
-  #                 "delete": "Delete: Sailor Moon"
-  #             },
-  #             "title": "Sailor Moon",
-  #             "name": "Banny Tsukino",
-  #             "age": 16,
-  #             "state": "inner"
-  #         },
-  #         {
-  #             "id": 2,
-  #             "sys_title": "Sailor Mercury",
-  #             "actions": {
-  #                 "edit": "Edit: Sailor Mercury",
-  #                 "delete": "Delete: Sailor Mercury"
-  #             },
-  #             "title": "Sailor Mercury",
-  #             "name": "Amy Mitsuno",
-  #             "age": 16,
-  #             "state": "inner"
-  #         }
-  #     ]
-  #   }
 
   def login
     redirect_url = sso_silent_url

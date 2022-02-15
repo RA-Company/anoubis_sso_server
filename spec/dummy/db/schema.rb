@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_10_113140) do
-
+ActiveRecord::Schema[7.0].define(version: 2022_02_14_112748) do
   create_table "systems", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title", limit: 100, null: false
     t.string "uuid", limit: 40, null: false
@@ -20,8 +19,8 @@ ActiveRecord::Schema.define(version: 2021_11_10_113140) do
     t.integer "state", default: 0, null: false
     t.json "jwk"
     t.json "request_uri"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["public"], name: "index_systems_on_public", unique: true
     t.index ["uuid"], name: "index_systems_on_uuid", unique: true
   end
@@ -35,8 +34,8 @@ ActiveRecord::Schema.define(version: 2021_11_10_113140) do
     t.string "password_digest", limit: 60, null: false
     t.string "uuid", limit: 40, null: false
     t.string "public", limit: 40, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["public"], name: "index_users_on_public", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
