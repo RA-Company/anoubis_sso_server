@@ -46,6 +46,8 @@ class AnoubisSsoServer::MainController < AnoubisSsoServer::ApplicationController
       return
     end
 
+    self.current_system = get_current_system
+
     unless current_system
       redirect_to redirect_url + 'error=' + ERB::Util.url_encode(I18n.t('anoubis.errors.system_not_defined')), { allow_other_host: true }
       return

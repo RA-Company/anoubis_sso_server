@@ -60,6 +60,41 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
   end
 
   ##
+  # Action for check user authorization for current browser.
+  def auth
+    result = {
+      result: -1
+    }
+
+    params[:prompt] = 'is' unless params.key? :prompt
+    params[:prompt] = 'is' if params[:prompt] != 'none'
+
+    err = check_basic_parameters
+
+    if err
+      result[:message] = err
+      return render(json: result)
+    end
+  end
+
+
+  ##
+  # Check basic oauth parameters (client_id, redirect_uri)
+  def check_basic_parameters
+    return I18n.t('anoubis.errors.is_not_defined', title: 'client_id') unless params.key? :client_id
+
+    @current_system = self.get_current_system params[:client_id]
+
+    return I18n.t('anoubis.errors.is_not_correct', title: 'client_id') unless current_system
+
+    return I18n.t('anoubis.errors.is_not_defined', title: 'redirect_uri') unless params.key? :redirect_uri
+
+    return I18n.t('anoubis.errors.is_not_correct', title: 'redirect_uri') unless current_system.request_uri.include? params[:redirect_uri]
+
+    nil
+  end
+
+  ##
   # Procedure generates keys according by used systems. Data is loaded from {AnoubisSsoServer::System}.
   # @return [Hash] Hash ow JWK keys
   def generate_jwks

@@ -5,6 +5,8 @@ ru:
       system_not_defined: "SSO система не определена в Rails.configuration.anoubis_sso_system"
       session_expired: "Сессия завершена"
       incorrect_user: "Некорректный пользователь"
+      is_not_defined: "Переменная %{title} не определена"
+      is_not_correct: "Переменная %{title} некорректна"
       fields:
         login: "Логин не задан"
         password: "Пароль не задан"

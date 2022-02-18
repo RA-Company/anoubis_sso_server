@@ -6,13 +6,15 @@ AnoubisSsoServer::Engine.routes.draw do
       scope path: ':version' do
         get 'login', to: 'anoubis_sso_server/main#login', as: 'api_internal_login'
         #get 'auth', to: 'main#auth'
-        get 'dashboard', to: 'anoubis_sso_server/dashboard#index'
+        get 'dashboard', to: 'anoubis_sso_server/index#dashboard'
+        get 'menu', to: 'anoubis_sso_server/index#menu'
       end
     end
 
     scope path: 'openid', defaults: { format: 'json' } do
       get '.well-known/openid-configuration', to: 'anoubis_sso_server/open_id#configuration', as: 'openid_configuration'
       get '.well-known/jwks.json', to: 'anoubis_sso_server/open_id#jwks', as: 'openid_jwks'
+      get 'oauth2/auth', to: 'anoubis_sso_server/open_id#auth', as: 'oauth_auth'
     end
   end
 end

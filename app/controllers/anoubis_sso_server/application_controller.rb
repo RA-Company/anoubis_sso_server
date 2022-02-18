@@ -85,31 +85,6 @@ class AnoubisSsoServer::ApplicationController < Anoubis::ApplicationController
       render_error_exit code: -3, error: I18n.t('anoubis.errors.incorrect_user')
       return
     end
-
-    if session
-      user = get_user_by_uuid session[:uuid]
-
-      if user
-        result[:data] = {
-          name: user.name,
-          surname: user.surname,
-          email: user.email,
-          id: user.public
-        }
-      else
-        self.redis.del("#{redis_prefix}session:#{cookies[:oauth_session]}")
-        cookies[:oauth_session] = nil
-        result = {
-          result: -2,
-          message: I18n.t('errors.incorrect_user')
-        }
-      end
-    else
-      result = {
-        result: -1,
-        message: I18n.t('errors.session_expired')
-      }
-    end
   end
 
   ##
@@ -211,7 +186,7 @@ class AnoubisSsoServer::ApplicationController < Anoubis::ApplicationController
 
   ##
   # Returns SSO User model.
-  # Can be redefined in Rails.application configuration_anoubis_ss_user_model configuration parameter.
+  # Can be redefined in Rails.application configuration_anoubis_sso_user_model configuration parameter.
   # By default returns {AnoubisSsoServer::User} model class
   # @return [Class] User model class
   def user_model
@@ -230,14 +205,12 @@ class AnoubisSsoServer::ApplicationController < Anoubis::ApplicationController
 
   ##
   # Returns current SSO system data
-  # @return [Hash] current SSO system
-  def current_system
-    @current_system ||= get_current_system
-  end
-
-  private def get_current_system
+  # @param system_title [String] - System public UUID parameter. By default load from Rails.application configuration_anoubis_sso_system configuration parameter.
+  # @return [AnoubisSsoServer::System] current SSO system
+  def get_current_system(system_title = nil)
     begin
-      system = AnoubisSsoServer::System.new(JSON.parse(redis.get("#{redis_prefix}system:#{Rails.configuration.anoubis_sso_system}"),{ symbolize_names: true }))
+      system_title = Rails.configuration.anoubis_sso_system unless system_title
+      system = AnoubisSsoServer::System.new(JSON.parse(redis.get("#{redis_prefix}system:#{system_title}"),{ symbolize_names: true }))
     rescue
       system = nil
     end
