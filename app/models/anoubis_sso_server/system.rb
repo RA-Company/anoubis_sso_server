@@ -19,7 +19,7 @@ class AnoubisSsoServer::System < AnoubisSsoServer::ApplicationRecord
   def before_validation_sso_server_system_on_create
     self.uuid = setup_private_system_id
     self.public = setup_public_system_id unless public
-    self.request_uri = []
+    self.request_uri = [] unless request_uri
 
     keys = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
     self.jwk = keys.export include_private: true

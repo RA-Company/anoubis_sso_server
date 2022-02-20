@@ -75,6 +75,22 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
       result[:message] = err
       return render(json: result)
     end
+
+    sign = params[:redirect_uri].index('?') ? '&' : '?'
+
+    err = check_listed_parameters %w[response_type scope code_challenge code_challenge_method state]
+
+    if err
+      result[:message] = err
+      return if redirect_to_uri result[:message], sign
+      return render(json: result)
+    end
+
+    unless %w[code].include? params[:response_type]
+      result[:message] = I18n.t('anoubis.errors.is_not_correct', title: 'response_type')
+      return if redirect_to_uri result[:message], sign
+      return render(json: result)
+    end
   end
 
 
@@ -92,6 +108,39 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
     return I18n.t('anoubis.errors.is_not_correct', title: 'redirect_uri') unless current_system.request_uri.include? params[:redirect_uri]
 
     nil
+  end
+
+  ##
+  # Check parameters
+  # @param list [Array] Array of parameters to check
+  def check_listed_parameters(list)
+    list.each do |key|
+      return I18n.t('anoubis.errors.is_not_defined', title: key) unless params.key? key.to_sym
+
+      return I18n.t('anoubis.errors.is_not_correct', title: key) unless params[key.to_sym]
+
+      params[key.to_sym].strip!
+
+      return I18n.t('anoubis.errors.is_not_correct', title: key)  if params[key.to_sym] == ''
+    end
+
+    nil
+  end
+
+  ##
+  # Check if page should be redirected to url
+  # @param error [String] Error message
+  # @param sign [String] Redirect url sign (? or &)
+  # @return [Boolean] return 'true' if page should be redirected
+  def redirect_to_uri(error, sign)
+    puts 'redirect_to_uri(error, sign)'
+    puts error, sign
+    if params[:prompt] == 'none'
+      redirect_to params[:redirect_uri] + sign + 'error=' + ERB::Util.url_encode(error), { allow_other_host: true }
+      return true
+    end
+
+    false
   end
 
   ##

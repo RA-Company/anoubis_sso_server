@@ -2,6 +2,8 @@ require 'rails_helper'
 
 module AnoubisSsoServer
   RSpec.describe System, type: :model do
-    pending "add some examples to (or delete) #{__FILE__}"
+    it "is valid" do
+      expect(create(:system)).to be_valid
+    end
   end
 end
