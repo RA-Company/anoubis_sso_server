@@ -91,6 +91,8 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
       return if redirect_to_uri result[:message], sign
       return render(json: result)
     end
+
+    scopes = params[:scope].split(' ')
   end
 
 

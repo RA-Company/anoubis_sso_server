@@ -11,6 +11,11 @@ RSpec.describe "/openid/oauth2/auth", :type => :request do
       locale: 'en',
       client_id: @sso_system.public,
       redirect_uri: @silent_url,
+      response_type: 'code',
+      scope: 'openid email profile',
+      code_challenge: 'wndobIXhSMoamTFlsVErtJ4LqSh4N9TMxY6rQ2Y04Ww',
+      code_challenge_method: 's256',
+      state: '07d21882-18b7-ddea-2fcaffdc84240101',
       prompt: 'none'
     }
   end
@@ -72,12 +77,101 @@ RSpec.describe "/openid/oauth2/auth", :type => :request do
     expect(response).to redirect_to(@silent_error + ERB::Util.url_encode(I18n.t('anoubis.errors.is_not_defined', title: 'response_type')))
   end
 
-  it "hasn't correct parameter 'response_type'" do
-    get "/openid/oauth2/auth", :params => @default_params.slice(:locale, :client_id, :redirect_uri).merge(response_type: ' ')
+  it "has empty parameter 'response_type'" do
+    get "/openid/oauth2/auth", :params => @default_params.except(:prompt).merge(response_type: ' ')
     expect(response.code).to eq "200"
     data = JSON.parse(response.body, { symbolize_names: true })
     expect(data.keys).to contain_exactly(:result, :message)
     expect(data[:result]).to eq(-1)
     expect(data[:message]).to eq(I18n.t('anoubis.errors.is_not_correct', title: 'response_type'))
+  end
+
+  it "has empty parameter 'response_type' in silent mode" do
+    get "/openid/oauth2/auth", :params => @default_params.merge(response_type: ' ')
+    expect(response).to redirect_to(@silent_error + ERB::Util.url_encode(I18n.t('anoubis.errors.is_not_correct', title: 'response_type')))
+  end
+
+  it "hasn't parameter 'scope'" do
+    get "/openid/oauth2/auth", :params => @default_params.slice(:locale, :client_id, :redirect_uri, :response_type)
+    expect(response.code).to eq "200"
+    data = JSON.parse(response.body, { symbolize_names: true })
+    expect(data.keys).to contain_exactly(:result, :message)
+    expect(data[:result]).to eq(-1)
+    expect(data[:message]).to eq(I18n.t('anoubis.errors.is_not_defined', title: 'scope'))
+  end
+
+  it "hasn't parameter 'scope' in silent mode" do
+    get "/openid/oauth2/auth", :params => @default_params.slice(:locale, :client_id, :redirect_uri, :response_type, :prompt)
+    expect(response).to redirect_to(@silent_error + ERB::Util.url_encode(I18n.t('anoubis.errors.is_not_defined', title: 'scope')))
+  end
+
+  it "hasn't parameter 'code_challenge'" do
+    get "/openid/oauth2/auth", :params => @default_params.slice(:locale, :client_id, :redirect_uri, :response_type, :scope)
+    expect(response.code).to eq "200"
+    data = JSON.parse(response.body, { symbolize_names: true })
+    expect(data.keys).to contain_exactly(:result, :message)
+    expect(data[:result]).to eq(-1)
+    expect(data[:message]).to eq(I18n.t('anoubis.errors.is_not_defined', title: 'code_challenge'))
+  end
+
+  it "hasn't parameter 'code_challenge' in silent mode" do
+    get "/openid/oauth2/auth", :params => @default_params.slice(:locale, :client_id, :redirect_uri, :response_type, :scope, :prompt)
+    expect(response).to redirect_to(@silent_error + ERB::Util.url_encode(I18n.t('anoubis.errors.is_not_defined', title: 'code_challenge')))
+  end
+
+  it "hasn't parameter 'code_challenge_method'" do
+    get "/openid/oauth2/auth", :params => @default_params.slice(:locale, :client_id, :redirect_uri, :response_type, :code_challenge, :scope)
+    expect(response.code).to eq "200"
+    data = JSON.parse(response.body, { symbolize_names: true })
+    expect(data.keys).to contain_exactly(:result, :message)
+    expect(data[:result]).to eq(-1)
+    expect(data[:message]).to eq(I18n.t('anoubis.errors.is_not_defined', title: 'code_challenge_method'))
+  end
+
+  it "hasn't parameter 'code_challenge_method' in silent mode" do
+    get "/openid/oauth2/auth", :params => @default_params.slice(:locale, :client_id, :redirect_uri, :response_type, :scope, :code_challenge, :prompt)
+    expect(response).to redirect_to(@silent_error + ERB::Util.url_encode(I18n.t('anoubis.errors.is_not_defined', title: 'code_challenge_method')))
+  end
+
+  it "hasn't parameter 'state'" do
+    get "/openid/oauth2/auth", :params => @default_params.slice(:locale, :client_id, :redirect_uri, :response_type, :code_challenge, :code_challenge_method, :scope)
+    expect(response.code).to eq "200"
+    data = JSON.parse(response.body, { symbolize_names: true })
+    expect(data.keys).to contain_exactly(:result, :message)
+    expect(data[:result]).to eq(-1)
+    expect(data[:message]).to eq(I18n.t('anoubis.errors.is_not_defined', title: 'state'))
+  end
+
+  it "hasn't parameter 'state' in silent mode" do
+    get "/openid/oauth2/auth", :params => @default_params.slice(:locale, :client_id, :redirect_uri, :response_type, :scope, :code_challenge, :code_challenge_method, :prompt)
+    expect(response).to redirect_to(@silent_error + ERB::Util.url_encode(I18n.t('anoubis.errors.is_not_defined', title: 'state')))
+  end
+
+  it "hasn't correct parameter 'response_type'" do
+    get "/openid/oauth2/auth", :params => @default_params.except(:prompt).merge(response_type: ' 1')
+    expect(response.code).to eq "200"
+    data = JSON.parse(response.body, { symbolize_names: true })
+    expect(data.keys).to contain_exactly(:result, :message)
+    expect(data[:result]).to eq(-1)
+    expect(data[:message]).to eq(I18n.t('anoubis.errors.is_not_correct', title: 'response_type'))
+  end
+
+  it "hasn't correct parameter 'response_type' in silent mode" do
+    get "/openid/oauth2/auth", :params => @default_params.merge(response_type: ' 1')
+    expect(response).to redirect_to(@silent_error + ERB::Util.url_encode(I18n.t('anoubis.errors.is_not_correct', title: 'response_type')))
+  end
+
+  it "hasn't correct parameter 'scope'" do
+    get "/openid/oauth2/auth", :params => @default_params.except(:prompt).merge(scope: ' ')
+    expect(response.code).to eq "200"
+    data = JSON.parse(response.body, { symbolize_names: true })
+    expect(data.keys).to contain_exactly(:result, :message)
+    expect(data[:result]).to eq(-1)
+    expect(data[:message]).to eq(I18n.t('anoubis.errors.is_not_correct', title: 'scope'))
+  end
+
+  it "hasn't correct parameter 'scope' in silent mode" do
+    get "/openid/oauth2/auth", :params => @default_params.merge(scope: ' ')
+    expect(response).to redirect_to(@silent_error + ERB::Util.url_encode(I18n.t('anoubis.errors.is_not_correct', title: 'scope')))
   end
 end
