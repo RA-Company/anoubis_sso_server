@@ -93,6 +93,19 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
     end
 
     scopes = params[:scope].split(' ')
+
+    params[:code_challenge_method] = params[:code_challenge_method].downcase
+    unless %w[s256].include? params[:code_challenge_method]
+      result[:message] = I18n.t('anoubis.errors.is_not_correct', title: 'code_challenge_method')
+      return if self.redirect_to_uri result[:message], sign
+      return render(json: result)
+    end
+
+    if params[:state].length < 6
+      result[:message] = I18n.t('anoubis.errors.less_than', title: 'state', size: 6)
+      return if self.redirect_to_uri result[:message], sign
+      return render(json: result)
+    end
   end
 
 

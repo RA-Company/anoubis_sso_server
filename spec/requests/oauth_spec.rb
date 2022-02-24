@@ -174,4 +174,32 @@ RSpec.describe "/openid/oauth2/auth", :type => :request do
     get "/openid/oauth2/auth", :params => @default_params.merge(scope: ' ')
     expect(response).to redirect_to(@silent_error + ERB::Util.url_encode(I18n.t('anoubis.errors.is_not_correct', title: 'scope')))
   end
+
+  it "hasn't correct parameter 'code_challenge_method'" do
+    get "/openid/oauth2/auth", :params => @default_params.except(:prompt).merge(code_challenge_method: 'test')
+    expect(response.code).to eq "200"
+    data = JSON.parse(response.body, { symbolize_names: true })
+    expect(data.keys).to contain_exactly(:result, :message)
+    expect(data[:result]).to eq(-1)
+    expect(data[:message]).to eq(I18n.t('anoubis.errors.is_not_correct', title: 'code_challenge_method'))
+  end
+
+  it "hasn't correct parameter 'code_challenge_method' in silent mode" do
+    get "/openid/oauth2/auth", :params => @default_params.merge(code_challenge_method: 'test')
+    expect(response).to redirect_to(@silent_error + ERB::Util.url_encode(I18n.t('anoubis.errors.is_not_correct', title: 'code_challenge_method')))
+  end
+
+  it "has incorrect 'state' size" do
+    get "/openid/oauth2/auth", :params => @default_params.except(:prompt).merge(state: 'test')
+    expect(response.code).to eq "200"
+    data = JSON.parse(response.body, { symbolize_names: true })
+    expect(data.keys).to contain_exactly(:result, :message)
+    expect(data[:result]).to eq(-1)
+    expect(data[:message]).to eq(I18n.t('anoubis.errors.less_than', title: 'state', size: 6))
+  end
+
+  it "has incorrect 'state' size in silent mode" do
+    get "/openid/oauth2/auth", :params => @default_params.merge(state: 'test')
+    expect(response).to redirect_to(@silent_error + ERB::Util.url_encode(I18n.t('anoubis.errors.less_than', title: 'state', size: 6)))
+  end
 end

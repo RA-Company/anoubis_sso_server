@@ -7,6 +7,7 @@ en:
       incorrect_user: "Incorrect user"
       is_not_defined: "%{title} isn't defined"
       is_not_correct: "%{title} isn't correct"
+      less_than: "%{title} length should be %{size} or more symbols"
       fields:
         login: "Login not defined"
         password: "Password not defined"

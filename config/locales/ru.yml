@@ -7,6 +7,7 @@ ru:
       incorrect_user: "Некорректный пользователь"
       is_not_defined: "Переменная %{title} не определена"
       is_not_correct: "Переменная %{title} некорректна"
+      less_than: "Длина переменной %{title} должна быть %{size} или более символов"
       fields:
         login: "Логин не задан"
         password: "Пароль не задан"
