@@ -106,6 +106,40 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
       return if self.redirect_to_uri result[:message], sign
       return render(json: result)
     end
+
+    logged_in = false
+
+    original_url = request.url[8..]
+    original_url = original_url[(original_url.index('/') + 1)..]
+
+    code = SecureRandom.uuid
+    code_hash = {
+      scope: scopes,
+      code_challenge: params[:code_challenge],
+      request_uri: params[:redirect_uri],
+      state: params[:state],
+      client_id: params[:client_id],
+      original_url: sso_server + original_url
+    }
+
+    puts 'Auth'
+    puts code_hash
+    session = self.get_oauth_session
+
+    puts 'Session'
+    puts session
+
+    result[:mesasge] = I18n.t('anoubis.errors.login_required')
+
+    if params[:prompt] == 'none'
+      redirect_to "#{params[:redirect_uri]}#{sign}error=#{result[:message]}", { allow_other_host: true }
+      return
+    end
+
+    url = sso_login_url
+    url += url.index('?') ? '&' : '?'
+    redis.set("#{redis_prefix}login_code:#{code}", code_hash.to_json, ex: 3600)
+    redirect_to "#{url}code=#{code}", { allow_other_host: true }
   end
 
 

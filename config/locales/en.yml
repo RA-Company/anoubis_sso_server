@@ -8,6 +8,7 @@ en:
       is_not_defined: "%{title} isn't defined"
       is_not_correct: "%{title} isn't correct"
       less_than: "%{title} length should be %{size} or more symbols"
+      login_required: "Login required"
       fields:
         login: "Login not defined"
         password: "Password not defined"

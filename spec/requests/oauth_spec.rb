@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "/openid/oauth2/auth", :type => :request do
   before(:all) do
+    @login_url = 'https://example.com/login'
     @silent_url = 'https://example.com/silent.html'
     @silent_error = "#{@silent_url}?error="
     @sso_system = AnoubisSsoServer::System.where(public: 'sso-test').first
@@ -201,5 +202,11 @@ RSpec.describe "/openid/oauth2/auth", :type => :request do
   it "has incorrect 'state' size in silent mode" do
     get "/openid/oauth2/auth", :params => @default_params.merge(state: 'test')
     expect(response).to redirect_to(@silent_error + ERB::Util.url_encode(I18n.t('anoubis.errors.less_than', title: 'state', size: 6)))
+  end
+
+  it "not logged in" do
+    get "/openid/oauth2/auth", :params => @default_params.except(:prompt)
+    expect(response.code).to eq "302"
+    expect(response).to redirect_to("#{@login_url}?code=")
   end
 end
