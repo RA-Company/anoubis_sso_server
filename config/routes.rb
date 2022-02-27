@@ -15,6 +15,9 @@ AnoubisSsoServer::Engine.routes.draw do
       get '.well-known/openid-configuration', to: 'anoubis_sso_server/open_id#configuration', as: 'openid_configuration'
       get '.well-known/jwks.json', to: 'anoubis_sso_server/open_id#jwks', as: 'openid_jwks'
       get 'oauth2/auth', to: 'anoubis_sso_server/open_id#auth', as: 'oauth_auth'
+      post 'oauth2/token', to: 'anoubis_sso_server/open_id#access_token', as: 'oauth_token'
+      options 'oauth2/token', to: 'anoubis_sso_server/application#options', as: nil
+      get 'oauth2/logout', to: 'anoubis_sso_server/open_id#logout', as: 'oauth_logout'
     end
   end
 end

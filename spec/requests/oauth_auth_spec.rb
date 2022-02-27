@@ -19,13 +19,27 @@ RSpec.describe "/openid/oauth2/auth", :type => :request do
       state: '07d21882-18b7-ddea-2fcaffdc84240101',
       prompt: 'none'
     }
+    @user = AnoubisSsoServer::User.where(email: 'admin@examle.com').first
+    @user = AnoubisSsoServer::User.create({ name: 'Test', surname: 'Test', email: 'admin@examle.com', password: 'password', password_confirmation: 'password' }) unless @user
+    @session = {
+      id: @user.id,
+      uuid: @user.uuid,
+      ttl: Time.now.utc.to_i + 3600,
+      timeout: 3600
+    }
+    @session_name = SecureRandom.uuid
+    @redis = Redis.new
+    @redis_prefix = Rails.configuration.anoubis_redis_prefix
+    @redis.set("#{@redis_prefix}:session:#{@session_name}", @session.to_json, ex: 300)
   end
 
   after(:all) do
+    @user.destroy if @user
     if @sso_system
       @sso_system.after_destroy_sso_server_system
       AnoubisSsoServer::System.where(id: @sso_system.id).delete_all
     end
+    @redis.del("#{@redis_prefix}:session:#{@session_name}")
   end
 
   it "hasn't parameter 'client_id'" do
@@ -205,8 +219,23 @@ RSpec.describe "/openid/oauth2/auth", :type => :request do
   end
 
   it "not logged in" do
+    cookies[:oauth_session] = 'test'
+    get "/openid/oauth2/auth", :params => @default_params
+    expect(response.code).to eq "302"
+    expect(response).to redirect_to(@silent_error + ERB::Util.url_encode(I18n.t('anoubis.errors.login_required')))
+  end
+
+  it "not logged in in silence mode" do
+    cookies[:oauth_session] = 'test'
     get "/openid/oauth2/auth", :params => @default_params.except(:prompt)
     expect(response.code).to eq "302"
-    expect(response).to redirect_to("#{@login_url}?code=")
+    expect(response.location).to start_with("#{@login_url}?code=")
+  end
+
+  it "code received" do
+    cookies[:oauth_session] = @session_name
+    get "/openid/oauth2/auth", :params => @default_params.except(:prompt)
+    expect(response.code).to eq "302"
+    expect(response.location).to start_with("#{@silent_url}?state=#{@default_params[:state]}&scope=#{@default_params[:scope]}&code=")
   end
 end

@@ -107,8 +107,6 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
       return render(json: result)
     end
 
-    logged_in = false
-
     original_url = request.url[8..]
     original_url = original_url[(original_url.index('/') + 1)..]
 
@@ -122,17 +120,26 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
       original_url: sso_server + original_url
     }
 
-    puts 'Auth'
-    puts code_hash
     session = self.get_oauth_session
 
-    puts 'Session'
-    puts session
+    if session
+      user = get_user_by_uuid session[:uuid]
 
-    result[:mesasge] = I18n.t('anoubis.errors.login_required')
+      if user
+        code_hash[:uuid] = user.uuid
+        redis.set("#{redis_prefix}code:#{code}", code_hash.to_json, ex: 6000)
+        redirect_to "#{params[:redirect_uri]}#{sign}state=#{params[:state]}&scope=#{params[:scope]}&code=#{code}", { allow_other_host: true }
+        return
+      else
+        redis.del("#{redis_prefix}session:#{cookies[:oauth_session]}")
+        cookies[:oauth_session] = nil
+      end
+    end
+
+    result[:message] = I18n.t('anoubis.errors.login_required')
 
     if params[:prompt] == 'none'
-      redirect_to "#{params[:redirect_uri]}#{sign}error=#{result[:message]}", { allow_other_host: true }
+      redirect_to params[:redirect_uri] + sign + 'error=' + ERB::Util.url_encode(result[:message]), { allow_other_host: true }
       return
     end
 
@@ -142,6 +149,121 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
     redirect_to "#{url}code=#{code}", { allow_other_host: true }
   end
 
+  ##
+  # Action makes access token based on defined parameters
+  def access_token
+    result = {
+      result: -1
+    }
+
+    params[:prompt] == 'yes'
+
+    err = check_basic_parameters
+
+    if err
+      result[:message] = err
+      return render(json: result)
+    end
+
+    err = check_listed_parameters %w[scope code code_verifier grant_type]
+
+    if err
+      result[:message] = err
+      return render(json: result)
+    end
+
+    begin
+      code = JSON.parse(redis.get("#{redis_prefix}code:#{params[:code]}"),{ symbolize_names: true })
+    rescue
+      code = nil
+    end
+
+    if !code || code.class != Hash
+      result[:message] = I18n.t('anoubis.errors.is_not_correct', title: 'code')
+      return render(json: result)
+    end
+
+    str = Digest::SHA256.base64digest(params[:code_verifier]).tr("+/", "-_").tr("=", "")
+
+    if code[:code_challenge] != str
+      result[:message] = I18n.t('anoubis.errors.is_not_correct', title: 'code_verifier')
+      return render(json: result)
+    end
+
+    if code[:request_uri] != params[:redirect_uri]
+      result[:error] = I18n.t('anoubis.errors.is_not_correct', title: 'request_uri')
+      return render(json: result)
+    end
+
+    header = {
+      alg: "RS256",
+      kid: "public:#{current_system.public}",
+      typ: "JWT"
+    }
+
+    user = get_user_by_uuid code[:uuid]
+
+    payload = {
+      aud: [],
+      client_id: current_system.uuid,
+      exp: Time.now.utc.to_i + current_system.ttl,
+      ext: {},
+      iat: Time.now.utc.to_i,
+      nbf: Time.now.utc.to_i,
+      iss: "#{sso_server}openid/",
+      jti: SecureRandom.uuid,
+      sub: SecureRandom.uuid,
+      scp: []
+    }
+
+    keys = JWT::JWK.import(current_system.jwk)
+
+    user_payload = {
+      aud: [current_system.public],
+      auth_time: Time.now.utc.to_i,
+      exp: Time.now.utc.to_i + current_system.ttl,
+      iss: "#{sso_server}openid/",
+      jti: SecureRandom.uuid,
+      sid: SecureRandom.uuid,
+      sub: SecureRandom.uuid,
+      iat: Time.now.utc.to_i,
+      rat: Time.now.utc.to_i - 1
+    }
+
+    user_payload[:email] = user.email if code[:scope].include? 'email'
+
+    if code[:scope].include? 'profile'
+      user_payload[:name] = user.name
+      user_payload[:surname] = user.surname
+    end
+
+    result = {
+      access_token: JWT.encode(payload, keys.keypair, 'RS256', header),
+      expires_in: current_system.ttl,
+      scope: code[:scope],
+      token_type: 'bearer',
+      id_token: JWT.encode(user_payload, keys.keypair, 'RS256', header),
+    }
+
+    token_hash = {
+      uuid: user.uuid
+    }
+
+    self.redis.set("#{redis_prefix}token:#{result[:access_token]}", token_hash.to_json, ex: current_system.ttl)
+    self.redis.del("#{redis_prefix}code:#{params[:code]}")
+
+    options
+
+    render json: result
+  end
+
+  ##
+  # Clear default session
+  def logout
+    redis.del("#{redis_prefix}session:#{cookies[:oauth_session]}")
+    cookies[:oauth_session] = nil
+    redirect_to sso_login_url, { allow_other_host: true }
+  end
 
   ##
   # Check basic oauth parameters (client_id, redirect_uri)
@@ -182,8 +304,6 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
   # @param sign [String] Redirect url sign (? or &)
   # @return [Boolean] return 'true' if page should be redirected
   def redirect_to_uri(error, sign)
-    puts 'redirect_to_uri(error, sign)'
-    puts error, sign
     if params[:prompt] == 'none'
       redirect_to params[:redirect_uri] + sign + 'error=' + ERB::Util.url_encode(error), { allow_other_host: true }
       return true

@@ -50,7 +50,7 @@ class AnoubisSsoServer::ApplicationController < Anoubis::ApplicationController
       end
     end
 
-    puts etc.inspect
+    #puts etc.inspect
   end
 
   ##
@@ -222,13 +222,9 @@ class AnoubisSsoServer::ApplicationController < Anoubis::ApplicationController
   # Check current origin of header by Regexp defined in Rails.configuration.anoubis_sso_origin configuration parameter
   # @return [Boolean] request host origin validation
   def check_origin
-    puts 'check_origin'
-    puts request.inspect
-    puts headers.inspect
-    puts request.origin
-    puts headers['origin']
-    false
-    #headers['origin'].match(sso_origin)
+    return true unless request.origin
+
+    request.origin.match(sso_origin)
   end
 
   ##

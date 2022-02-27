@@ -63,6 +63,7 @@ unless ext_system
   ext_system = AnoubisSsoServer::System.new
   ext_system.title = '<system_name>'
   ext_system.public = '<system_identifier>'
+  ext_system.request_uri = %w[https://<server_url>/silent-callback.html https://<server_url>/callback]
   ext_system.save
 end
 ```
@@ -76,11 +77,24 @@ After this seed this data to database:
 This configuration parameters can be placed at files config/application.rb for global configuration or config/environments/<environment>.rb for custom environment configuration.
 
 ```ruby
+config.anoubis_redis_prefix = '<sample-prefix>' # Redis prefix for store cache data (when many applications run in one physical server)
 config.anoubis_sso_server = 'https://sso.example.com/' # Full URL of SSO server (*required)
 config.anoubis_sso_system = 'sso-system' # Internal SSO system identifier (*required)
 config.anoubis_sso_origin = /^https:\/\/.*\.example\.com$/ # Regexp for prevent CORS access from others domain (*required)
 config.anoubis_sso_login_url = 'https://sso.example.com/login' # Full URL for login page. (By default calculate from config.anoubis_sso_server adding 'login') (*optional)
 config.anoubis_sso_silent_url = 'https://sso.example.com/silent.html' # Full URL for silent refresh page. (By default calculate from config.anoubis_sso_server adding 'silent.html') (*optional)
+config.anoubis_sso_user_model = 'AnoubisSsoServer::User'# Used user model. ()By default used AnoubisSsoServer::User model) (*optional)
+```
+
+Also pay attention on this configuration parameters:
+
+```ruby
+config.api_only = true # for API only application
+config.middleware.use ActionDispatch::Cookies # for attach cookies into the API application
+
+config.hosts.clear # for clearing allowed IP requests
+
+config.action_dispatch.default_headers.clear # for clear default response headers 
 ```
 
 ## Development

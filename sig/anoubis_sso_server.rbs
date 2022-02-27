@@ -1,4 +1,10 @@
 module AnoubisSsoServer
   VERSION: String
   # See the writing guide of rbs: https://github.com/ruby/rbs#guides
+
+  class User
+    attr_accessor email: String
+    attr_accessor name: String
+    attr_accessor surname: String
+  end
 end
