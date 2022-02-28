@@ -29,21 +29,21 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "anoubis", ">= 1.0.0"
-  spec.add_dependency "rails", ">= 7.0.0"
-  spec.add_dependency "redis", ">= 4.5.1"
-  spec.add_dependency "bcrypt", ">= 3.1.16"
-  spec.add_dependency "rest-client", ">= 2.1.0"
-  spec.add_dependency "mysql2", ">= 0.5.3"
-  spec.add_dependency "jwt", ">= 2.3.0"
+  spec.add_dependency "anoubis", "~> 1.0.1"
+  spec.add_dependency "rails", "~> 7.0.0"
+  spec.add_dependency "redis", "~> 4.5.1"
+  spec.add_dependency "bcrypt", "~> 3.1.16"
+  spec.add_dependency "rest-client", "~> 2.1.0"
+  spec.add_dependency "mysql2", "~> 0.5.3"
+  spec.add_dependency "jwt", "~> 2.3.0"
 
-  spec.add_development_dependency "rake", ">= 0.13"
-  spec.add_development_dependency "rspec", ">= 3.11.0"
-  spec.add_development_dependency "rspec-rails", ">= 5.1"
-  spec.add_development_dependency "factory_bot_rails", ">= 6.2.0"
-  spec.add_development_dependency "dotenv", '>= 2.7'
-  spec.add_development_dependency "simplecov", '>= 0.21'
-  spec.add_development_dependency "rubocop"
+  spec.add_development_dependency "rake", "~> 0.13"
+  spec.add_development_dependency "rspec", "~> 3.11.0"
+  spec.add_development_dependency "rspec-rails", "~> 5.1"
+  spec.add_development_dependency "factory_bot_rails", "~> 6.2.0"
+  spec.add_development_dependency "dotenv", '~> 2.7'
+  spec.add_development_dependency "simplecov", '~> 0.21'
+  spec.add_development_dependency "rubocop", '~> 1.25'
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
