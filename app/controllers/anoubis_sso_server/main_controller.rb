@@ -56,7 +56,7 @@ class AnoubisSsoServer::MainController < AnoubisSsoServer::ApplicationController
     code = nil
     if params[:code]
       begin
-        code = JSON.parse(self.redis.get("#{self.redis_prefix}login_code:#{params[:code]}"),{ symbolize_names: true })
+        code = JSON.parse(self.redis.get("#{redis_prefix}login_code:#{params[:code]}"),{ symbolize_names: true })
       rescue
 
       end
@@ -80,5 +80,47 @@ class AnoubisSsoServer::MainController < AnoubisSsoServer::ApplicationController
       redis.set("#{redis_prefix}auth_code:#{auth_code}", params[:code], ex: 600)
       redirect_to redirect_url + "code=#{auth_code}", { allow_other_host: true }
     end
+  end
+
+  ##
+  # Procedure check current login status of user and redirect to URL used for call /openid/oauth2/auth.
+  def auth
+    redirect_url = sso_silent_url
+    redirect_url += redirect_url.index('?') ? '&' : '?'
+
+    err = check_listed_parameters %w[code]
+
+    if err
+      redirect_to redirect_url + 'error=' + ERB::Util.url_encode(err), { allow_other_host: true }
+      return
+    end
+
+    begin
+      session = JSON.parse(redis.get("#{redis_prefix}session:#{cookies[:oauth_session]}"), { symbolize_names: true })
+    rescue StandardError
+      session = nil
+      cookies[:oauth_session] = nil
+    end
+
+    unless session
+      redirect_to redirect_url + 'error=' + ERB::Util.url_encode(I18n.t('anoubis.errors.session_expired')), { allow_other_host: true }
+      return
+    end
+
+    begin
+      auth_code = redis.get("#{redis_prefix}auth_code:#{params[:code]}")
+      code = JSON.parse(redis.get("#{redis_prefix}login_code:#{auth_code}"), { symbolize_names: true })
+    rescue StandardError
+      code = nil
+    end
+
+    unless code
+      redirect_to redirect_url + 'error=' + ERB::Util.url_encode(I18n.t('anoubis.errors.is_not_correct', title: 'code')), { allow_other_host: true }
+      return
+    end
+
+    self.redis.del("#{redis_prefix}auth_code:#{params[:code]}")
+    self.redis.del("#{redis_prefix}login_code:#{auth_code}")
+    redirect_to code[:original_url], { allow_other_host: true }
   end
 end

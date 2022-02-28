@@ -5,7 +5,7 @@ AnoubisSsoServer::Engine.routes.draw do
     scope path: 'api', defaults: { format: 'json' } do
       scope path: ':version' do
         get 'login', to: 'anoubis_sso_server/main#login', as: 'api_internal_login'
-        #get 'auth', to: 'main#auth'
+        get 'auth', to: 'anoubis_sso_server/main#auth', as: 'api_internal_auth'
         get 'dashboard', to: 'anoubis_sso_server/index#dashboard'
         get 'menu', to: 'anoubis_sso_server/index#menu'
       end

@@ -282,23 +282,6 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
   end
 
   ##
-  # Check parameters
-  # @param list [Array] Array of parameters to check
-  def check_listed_parameters(list)
-    list.each do |key|
-      return I18n.t('anoubis.errors.is_not_defined', title: key) unless params.key? key.to_sym
-
-      return I18n.t('anoubis.errors.is_not_correct', title: key) unless params[key.to_sym]
-
-      params[key.to_sym].strip!
-
-      return I18n.t('anoubis.errors.is_not_correct', title: key)  if params[key.to_sym] == ''
-    end
-
-    nil
-  end
-
-  ##
   # Check if page should be redirected to url
   # @param error [String] Error message
   # @param sign [String] Redirect url sign (? or &)
