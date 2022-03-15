@@ -38,18 +38,24 @@ class AnoubisSsoServer::ApplicationController < Anoubis::ApplicationController
     if access_allowed?
       options request.method.to_s.upcase
     else
-      render_error_exit({ error: I18n.t('errors.access_not_allowed') })
+      render_error_exit({ error: I18n.t('anoubis.errors.access_not_allowed') })
       return
     end
 
-    if self.authenticate?
-      if self.authentication
-        if self.check_menu_access?
-          return if !self.menu_access params[:controller]
+    if authenticate?
+      if authentication
+        if check_menu_access?
+          return if !menu_access params[:controller]
         end
       end
     end
 
+    after_sso_server_initialization
+  end
+
+  ##
+  # Procedure fires after initializes all basic parameters of {AnoubisSsoServer::ApplicationController}
+  def after_sso_server_initialization
     #puts etc.inspect
   end
 

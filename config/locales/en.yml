@@ -1,10 +1,7 @@
 en:
   anoubis:
     errors:
-      incorrect_login: "Incorrect login or password"
       system_not_defined: "SSO system is not defined in Rails.configuration.anoubis_sso_system"
-      session_expired: "Session expired"
-      incorrect_user: "Incorrect user"
       is_not_defined: "%{title} isn't defined"
       is_not_correct: "%{title} isn't correct"
       less_than: "%{title} length should be %{size} or more symbols"

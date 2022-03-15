@@ -1,10 +1,7 @@
 ru:
   anoubis:
     errors:
-      incorrect_login: "Некорректный логин или пароль"
       system_not_defined: "SSO система не определена в Rails.configuration.anoubis_sso_system"
-      session_expired: "Сессия завершена"
-      incorrect_user: "Некорректный пользователь"
       is_not_defined: "Переменная %{title} не определена"
       is_not_correct: "Переменная %{title} некорректна"
       less_than: "Длина переменной %{title} должна быть %{size} или более символов"
