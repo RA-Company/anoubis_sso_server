@@ -197,7 +197,7 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
 
     header = {
       alg: "RS256",
-      kid: "public:#{current_system.public}",
+      kid: "public:#{current_system.uuid}",
       typ: "JWT"
     }
 
