@@ -249,8 +249,8 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
       uuid: user.uuid
     }
 
-    self.redis.set("#{redis_prefix}token:#{result[:access_token]}", token_hash.to_json, ex: current_system.ttl)
-    self.redis.del("#{redis_prefix}code:#{params[:code]}")
+    redis.set("#{redis_prefix}token:#{result[:access_token]}", token_hash.to_json, ex: current_system.ttl)
+    redis.del("#{redis_prefix}code:#{params[:code]}")
 
     options
 
@@ -263,6 +263,28 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
     redis.del("#{redis_prefix}session:#{cookies[:oauth_session]}")
     cookies[:oauth_session] = nil
     redirect_to sso_login_url, { allow_other_host: true }
+  end
+
+  ##
+  # Action that returns user information parameters
+  def userinfo
+    puts 'userinfo'
+    auth_token = request.env.fetch('HTTP_AUTHORIZATION', '').scan(/Bearer (.*)$/).flatten.last
+    puts auth_token
+
+    unless auth_token
+      render json: { error: I18n.t('anoubis.errors.access_not_allowed') }
+      return
+    end
+
+    begin
+      data = JSON.parse(redis.get("#{redis_prefix}token:#{auth_token}"), { symbolize_names: true })
+    rescue StandardError
+      render json: { error: I18n.t('anoubis.errors.access_not_allowed') }
+      return
+    end
+
+    puts data
   end
 
   ##
