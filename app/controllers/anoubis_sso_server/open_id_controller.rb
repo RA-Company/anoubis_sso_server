@@ -268,9 +268,7 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
   ##
   # Action that returns user information parameters
   def userinfo
-    puts 'userinfo'
     auth_token = request.env.fetch('HTTP_AUTHORIZATION', '').scan(/Bearer (.*)$/).flatten.last
-    puts auth_token
 
     unless auth_token
       render json: { error: I18n.t('anoubis.errors.access_not_allowed') }
@@ -280,11 +278,44 @@ class AnoubisSsoServer::OpenIdController < AnoubisSsoServer::ApplicationControll
     begin
       data = JSON.parse(redis.get("#{redis_prefix}token:#{auth_token}"), { symbolize_names: true })
     rescue StandardError
+      data = nil
+    end
+
+    if data.class == Hash
+      data = nil unless data.key? :uuid
+    else
+      data = nil
+    end
+
+    if data
+      data = load_userinfo data[:uuid]
+    end
+
+    unless data
       render json: { error: I18n.t('anoubis.errors.access_not_allowed') }
       return
     end
 
-    puts data
+    render json: data
+  end
+
+  ##
+  # Load userinfo information from model and convert it into hash
+  # @param uuid [String] - User identifier
+  # @return [Hash] - User information
+  def load_userinfo(uuid)
+    data = user_model.where(uuid: uuid).first
+
+    return nil unless data
+
+    {
+      public: data.public,
+      email: data.email,
+      name: data.name,
+      surname: data.surname,
+      timezone: data.timezone,
+      locale: data.locale
+    }
   end
 
   ##
