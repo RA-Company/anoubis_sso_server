@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email = ["andrey.ryabov@ra-company.kz"]
 
   spec.summary = "Library for create basic SSO Server based on OAUTH authentication."
-  spec.description = "Library for create basic SSO Server based on OAUTH authentication."
+  spec.description = "Library for create basic SSO Server based on OAUTH authentication for simplify deployment."
   spec.homepage = "https://github.com/RA-Company/"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.7.1"
@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "anoubis", "~> 1.0.1"
+  spec.add_dependency "anoubis", ">= 1.0.5", "< 2.0"
   spec.add_dependency "rails", "~> 7.0.0"
   spec.add_dependency "redis", "~> 4.5.1"
   spec.add_dependency "bcrypt", "~> 3.1.16"
